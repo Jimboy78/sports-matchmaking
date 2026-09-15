@@ -6,7 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SportChips from "../components/SportChips";
 import { Avatar, Button, SectionHeader, Stat } from "../components/ui";
-import { LAST_TEN, MATCH_HISTORY, SPORTS, avatarUrl, levelName, playerById, type SportId } from "../data/demo";
+import { SPORTS, avatarUrl, levelName, playerById, type SportId } from "../data/demo";
 import { useApp } from "../context/AppContext";
 import { colors, fonts } from "../theme";
 
@@ -85,7 +85,7 @@ export default function Profile() {
 
       <SectionHeader title="ÚLTIMOS 10" />
       <View style={styles.form}>
-        {LAST_TEN.map((won, i) => (
+        {state.lastTen.map((won, i) => (
           <View key={i} style={[styles.formDot, { backgroundColor: won ? colors.lime : colors.coral }]}>
             <Text style={styles.formDotText}>{won ? "G" : "P"}</Text>
           </View>
@@ -93,7 +93,7 @@ export default function Profile() {
       </View>
 
       <SectionHeader title="HISTORIAL" />
-      {MATCH_HISTORY.map((m) => {
+      {state.history.map((m) => {
         const rival = playerById(m.opponentId);
         return (
           <View key={m.id} style={styles.match}>

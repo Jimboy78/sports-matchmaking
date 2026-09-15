@@ -1,5 +1,14 @@
 import React, { createContext, useContext, useMemo, useReducer } from "react";
-import { MY_PROFILE, seedReservations, type Profile, type Reservation, type SportId } from "../data/demo";
+import {
+  LAST_TEN,
+  MATCH_HISTORY,
+  MY_PROFILE,
+  seedReservations,
+  type MatchResult,
+  type Profile,
+  type Reservation,
+  type SportId,
+} from "../data/demo";
 
 interface State {
   sport: SportId;
@@ -7,6 +16,9 @@ interface State {
   reservations: Reservation[];
   matches: string[];
   passed: string[];
+  history: MatchResult[];
+  /** Most recent first. */
+  lastTen: boolean[];
 }
 
 type Action =
@@ -16,7 +28,8 @@ type Action =
   | { type: "cancel"; id: string }
   | { type: "like"; id: string }
   | { type: "pass"; id: string }
-  | { type: "resetDeck" };
+  | { type: "resetDeck" }
+  | { type: "recordMatch"; result: MatchResult };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -34,6 +47,22 @@ function reducer(state: State, action: Action): State {
       return { ...state, passed: [...state.passed, action.id] };
     case "resetDeck":
       return { ...state, passed: [] };
+    case "recordMatch": {
+      const { result } = action;
+      const { profile } = state;
+      return {
+        ...state,
+        history: [result, ...state.history],
+        lastTen: [result.won, ...state.lastTen].slice(0, 10),
+        profile: {
+          ...profile,
+          elo: profile.elo + result.eloDelta,
+          wins: profile.wins + (result.won ? 1 : 0),
+          losses: profile.losses + (result.won ? 0 : 1),
+          streak: result.won ? profile.streak + 1 : 0,
+        },
+      };
+    }
     default:
       return state;
   }
@@ -46,6 +75,8 @@ function useAppState() {
     reservations: seedReservations(),
     matches: ["p1", "v1"],
     passed: [],
+    history: MATCH_HISTORY,
+    lastTen: LAST_TEN,
   }));
 
   const actions = useMemo(
@@ -57,6 +88,7 @@ function useAppState() {
       like: (id: string) => dispatch({ type: "like", id }),
       pass: (id: string) => dispatch({ type: "pass", id }),
       resetDeck: () => dispatch({ type: "resetDeck" }),
+      recordMatch: (result: MatchResult) => dispatch({ type: "recordMatch", result }),
     }),
     []
   );

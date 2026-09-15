@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import Logo from "../components/Logo";
 import SportChips from "../components/SportChips";
 import BookingModal from "../components/BookingModal";
+import LiveScorer from "../components/LiveScorer";
 import { Avatar, Button, SectionHeader, Stat } from "../components/ui";
 import { SPORTS, avatarUrl, courtById, playerById } from "../data/demo";
 import { useApp } from "../context/AppContext";
@@ -18,6 +19,7 @@ export default function Home() {
   const navigation = useNavigation<any>();
   const { state, setSport, cancel } = useApp();
   const [booking, setBooking] = useState(false);
+  const [scoring, setScoring] = useState(false);
   const now = useNow(30000);
 
   const upcoming = state.reservations.filter((r) => r.start > now);
@@ -73,6 +75,21 @@ export default function Home() {
           <Stat label="Racha" value={`${profile.streak}🔥`} accent={colors.gold} />
         </View>
 
+        <Pressable
+          style={({ pressed }) => [styles.liveCard, pressed && { transform: [{ scale: 0.98 }] }]}
+          onPress={() => setScoring(true)}
+          accessibilityLabel="Abrir marcador en vivo"
+        >
+          <View style={styles.liveIcon}>
+            <Ionicons name="stopwatch" size={26} color={colors.bg} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.liveTitle}>MARCADOR EN VIVO</Text>
+            <Text style={styles.muted}>Anotá punto a punto y sumá ELO al terminar</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={22} color={colors.lime} />
+        </Pressable>
+
         <SectionHeader title="TUS COMPAÑEROS" action="Descubrir más" onAction={() => navigation.navigate("Descubrir")} />
         {matched.length === 0 ? (
           <Text style={styles.muted}>Deslizá en Descubrir para encontrar con quién jugar.</Text>
@@ -114,6 +131,7 @@ export default function Home() {
       </ScrollView>
 
       <BookingModal visible={booking} onClose={() => setBooking(false)} />
+      <LiveScorer visible={scoring} onClose={() => setScoring(false)} />
     </View>
   );
 }
@@ -145,6 +163,18 @@ const styles = StyleSheet.create({
   },
   emptyText: { fontFamily: fonts.semibold, color: colors.text },
   stats: { flexDirection: "row", gap: 10 },
+  liveCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    padding: 14,
+    borderRadius: 22,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: "rgba(198,244,50,0.35)",
+  },
+  liveIcon: { width: 50, height: 50, borderRadius: 16, backgroundColor: colors.lime, alignItems: "center", justifyContent: "center" },
+  liveTitle: { fontFamily: fonts.display, color: colors.text, fontSize: 24, letterSpacing: 1 },
   muted: { fontFamily: fonts.body, color: colors.muted, fontSize: 13 },
   mate: { alignItems: "center", gap: 6 },
   mateName: { fontFamily: fonts.semibold, color: colors.text, fontSize: 12 },
