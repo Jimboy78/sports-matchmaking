@@ -37,6 +37,8 @@ function Tabs() {
       initialRouteName="Inicio"
       screenOptions={({ route }) => ({
         headerShown: false,
+        // React Navigation switches to "beside-icon" on wide windows, which overlaps inside the phone frame.
+        tabBarLabelPosition: "below-icon",
         tabBarActiveTintColor: colors.lime,
         tabBarInactiveTintColor: colors.muted,
         tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.line, height: 66, paddingTop: 8, paddingBottom: 10 },

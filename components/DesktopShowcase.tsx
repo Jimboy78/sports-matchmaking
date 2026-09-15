@@ -1,6 +1,6 @@
 // Web-only wrapper for wide screens: a landing column next to the app running inside a phone frame.
 import React from "react";
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LogoMark } from "./Logo";
 import { colors, fonts } from "../theme";
@@ -14,10 +14,12 @@ const FEATURES: { icon: keyof typeof Ionicons.glyphMap; text: string }[] = [
 
 export default function DesktopShowcase({ children }: { children: React.ReactNode }) {
   const { height } = useWindowDimensions();
-  const phoneHeight = Math.min(860, height - 48);
+  // Keep a real phone width; on short windows the page scrolls instead of squashing the app.
+  const phoneHeight = Math.max(680, Math.min(844, height - 48));
 
   return (
-    <View style={styles.page}>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ minHeight: height }}>
+    <View style={[styles.page, { minHeight: height, paddingVertical: 24 }]}>
       <View style={[styles.glow, { top: -200, left: -160 }]} />
       <View style={[styles.glow, styles.glowSky, { bottom: -220, right: 120 }]} />
 
@@ -52,11 +54,12 @@ export default function DesktopShowcase({ children }: { children: React.ReactNod
         <Text style={styles.hint}>👉 Probá la demo en el teléfono: deslizá tarjetas, reservá y editá tu perfil.</Text>
       </View>
 
-      <View style={[styles.phone, { height: phoneHeight, width: phoneHeight * 0.47 }]}>
+      <View style={[styles.phone, { height: phoneHeight, width: 390 }]}>
         <View style={styles.notch} />
         <View style={styles.screen}>{children}</View>
       </View>
     </View>
+    </ScrollView>
   );
 }
 
