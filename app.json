@@ -1,15 +1,16 @@
 {
   "expo": {
-    "name": "sports-matchmaking",
+    "name": "MatchPoint",
     "slug": "sports-matchmaking",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0a0f0d",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0a0f0d"
     },
     "ios": {
       "supportsTablet": true
@@ -17,11 +18,18 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0a0f0d"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "name": "MatchPoint · Encontrá con quién jugar",
+      "shortName": "MatchPoint",
+      "themeColor": "#0a0f0d",
+      "backgroundColor": "#0a0f0d"
+    },
+    "plugins": ["expo-font"]
   }
 }
